@@ -1,15 +1,19 @@
+import { env } from 'process';
 import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 
-const dbUrl = new URL(process.env.DATABASE_URL);
-
 @Module({
   imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+      envFilePath: '.env',
+    }),
     TypeOrmModule.forRoot({
       type: 'cockroachdb',
-      url: dbUrl.toString(),
+      url: env.DATABASE_URL || '',
       ssl: true,
     }),
   ],
